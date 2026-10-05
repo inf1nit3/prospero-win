@@ -30,7 +30,7 @@ typedef struct PwDataMountOps {
 } PwDataMountOps;
 
 typedef struct PwDataMountResult {
-    int data_before;   /* /data was already reachable */
+    int data_before;   /* /data was already usable (stat and lstat) */
     int helper_completed; /* helper returned success for this process */
     int helper_errno;     /* errno for a failed request, else 0 */
     int data_after;    /* /data became reachable */

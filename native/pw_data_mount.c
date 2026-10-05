@@ -57,10 +57,15 @@ static int native_helper_request(int32_t pid)
 #endif
 }
 
+/* Reachable is not enough: a tool such as PS5SXHelper's mountroot can make
+ * /data visible to an unelevated title, where stat() works but the kernel
+ * refuses lstat() with EPERM (FW 13.60), and Wine's server then cannot start.
+ * Only an elevated title can lstat() it. */
 static int native_data_visible(void)
 {
     struct stat st;
-    return stat(PW_DATA_MOUNT_PATH, &st) == 0 && S_ISDIR(st.st_mode);
+    return stat(PW_DATA_MOUNT_PATH, &st) == 0 && S_ISDIR(st.st_mode) &&
+           lstat(PW_DATA_MOUNT_PATH, &st) == 0;
 }
 
 static void native_sleep_ms(int ms)
